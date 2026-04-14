@@ -65,27 +65,46 @@ Smriti.ai follows a **Multi-Stage Agentic RAG Pipeline**:
 
 ## 🚀 Setup & Execution
 
-### 1. Environment Setup
+### 1. Prerequisites
+- **Python 3.10+**
+- A **Google Cloud Project** with the following APIs enabled:
+  - Gmail API
+  - Google Sheets API
+
+### 2. Google Cloud Configuration
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
+2. Create a new project named `Smriti-AI`.
+3. Enable **Gmail API** and **Google Sheets API**.
+4. Configure the **OAuth Consent Screen** (External) and add your email as a test user.
+5. Create **OAuth 2.0 Client IDs** (Desktop Application).
+6. Download your `Client ID` and `Client Secret`.
+
+### 3. Environment Setup
 Copy `.env.example` to `.env` and fill in your credentials:
 ```env
 GOOGLE_API_KEY=your_gemini_api_key
 GMAIL_CLIENT_ID=your_oauth_client_id
 GMAIL_CLIENT_SECRET=your_oauth_client_secret
 GMAIL_SENDER_EMAIL=you@gmail.com
-GMAIL_REFRESH_TOKEN=  # Fill via setup_gmail_token.py
-GOOGLE_OAUTH_CLIENT_ID=your_google_oauth_id      # For Google Sign-In
-GOOGLE_OAUTH_CLIENT_SECRET=your_google_oauth_secret
+GOOGLE_SHEETS_ID=your_spreadsheet_id
 ```
 
-### 2. Install Requirements
+### 4. Install Requirements
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. (Optional) Setup Gmail Token
+### 5. Generate Refresh Token (Unified Setup)
+Run this utility once to authorize both Gmail and Google Sheets access. This will automatically update your `.env` with the `GMAIL_REFRESH_TOKEN`:
 ```bash
 python setup_gmail_token.py
 ```
+
+### 6. Run Application
+```bash
+python app.py
+```
+Navigate to `http://localhost:5000/`
 
 ### 4. Run Application
 ```bash

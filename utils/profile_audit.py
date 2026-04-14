@@ -7,7 +7,7 @@ from utils.rag import get_llm, get_full_text_from_uploads
 from langchain_core.prompts import ChatPromptTemplate
 
 # Configuration
-SPREADSHEET_ID = '1Shpc-PmI3WLlQwSL2qhvdT_heMSaF4Ar4SYH6XQjHGw'
+SPREADSHEET_ID = os.environ.get("GOOGLE_SHEETS_ID", "1Shpc-PmI3WLlQwSL2qhvdT_heMSaF4Ar4SYH6XQjHGw")
 def _get_sheets_service():
     """Authenticate with Google Sheets API using OAuth2 credentials from .env."""
     client_id = os.environ.get("GMAIL_CLIENT_ID")
