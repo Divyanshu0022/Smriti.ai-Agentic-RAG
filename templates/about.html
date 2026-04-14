@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Smriti.ai</title>
+    <meta name="description" content="About Smriti.ai: Next-Gen Vector Indexing for Persistent Organizational Memory.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fa-solid fa-brain"></i> Smriti.ai</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/" class="nav-link"><i class="fa-solid fa-comments"></i> Chat Assistant</a>
+                <a href="/about" class="nav-link active"><i class="fa-solid fa-circle-info"></i> About Project</a>
+                <a href="/premium" class="nav-link" style="color: #66FCF1; font-weight: 600;"><i
+                        class="fa-solid fa-wand-magic-sparkles"></i> Premium View</a>
+            </nav>
+        </aside>
+
+        <main class="main-content about-page">
+            <div class="about-container">
+                <header class="about-header">
+                    <div class="model-badge">Final Year Major Project</div>
+                    <h1>Intelligent Domain-Specific Knowledge Assistant</h1>
+                    <p class="about-subtitle">Using Advanced RAG Architecture</p>
+                </header>
+
+                <section class="about-section">
+                    <h2><i class="fa-solid fa-bullseye"></i> Project Overview</h2>
+                    <p>This project is an advanced AI-powered knowledge assistant built using
+                        <strong>Retrieval-Augmented Generation (RAG)</strong>. It enables users to upload
+                        domain-specific documents and interact with them through natural language queries — with full
+                        transparency into how answers are generated.</p>
+                </section>
+
+                <section class="about-section">
+                    <h2><i class="fa-solid fa-star"></i> Key Highlights</h2>
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fa-solid fa-robot"></i></div>
+                            <h3>Context-Aware Answers</h3>
+                            <p>LLM-powered answer generation grounded in uploaded document context using RAG
+                                architecture.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                            <h3>Semantic Search</h3>
+                            <p>Vector embeddings with FAISS enable semantic document search beyond keyword matching.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fa-solid fa-file-lines"></i></div>
+                            <h3>Auto Summarization</h3>
+                            <p>Automatic document summary generation on upload, stored in SQLite for instant retrieval.
+                            </p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fa-solid fa-eye"></i></div>
+                            <h3>Explainable AI (XAI)</h3>
+                            <p>Transparent retrieval with similarity scores, source attribution, and chunk-level
+                                traceability.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                            <h3>Comparison Mode</h3>
+                            <p>Side-by-side comparison of RAG-augmented vs direct LLM responses to demonstrate RAG
+                                value.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+                            <h3>Evaluation Metrics</h3>
+                            <p>Performance benchmarking with MRR, NDCG, and t-SNE embeddings visualization.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fa-solid fa-database"></i></div>
+                            <h3>SQLite Integration</h3>
+                            <p>Structured storage of documents, summaries, and query logs for analytics and auditing.
+                            </p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
+                            <h3>Response Caching</h3>
+                            <p>In-memory caching of embeddings and responses to reduce API costs and latency.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="about-section">
+                    <h2><i class="fa-solid fa-layer-group"></i> System Architecture</h2>
+                    <div class="arch-flow">
+                        <div class="arch-step">
+                            <div class="arch-num">1</div>
+                            <div class="arch-label">Document Ingestion</div>
+                            <div class="arch-desc">Upload PDF/TXT → Parse & Clean</div>
+                        </div>
+                        <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                        <div class="arch-step">
+                            <div class="arch-num">2</div>
+                            <div class="arch-label">Chunking & Embedding</div>
+                            <div class="arch-desc">Recursive splitting → Gemini Embeddings</div>
+                        </div>
+                        <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                        <div class="arch-step">
+                            <div class="arch-num">3</div>
+                            <div class="arch-label">Vector Storage</div>
+                            <div class="arch-desc">FAISS Index + SQLite Metadata</div>
+                        </div>
+                        <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                        <div class="arch-step">
+                            <div class="arch-num">4</div>
+                            <div class="arch-label">Retrieval & Ranking</div>
+                            <div class="arch-desc">Top-K similarity search + scoring</div>
+                        </div>
+                        <div class="arch-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                        <div class="arch-step">
+                            <div class="arch-num">5</div>
+                            <div class="arch-label">LLM Generation</div>
+                            <div class="arch-desc">Gemini 2.5 Flash-Lite + RAG prompt</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="about-section">
+                    <h2><i class="fa-solid fa-microchip"></i> Technologies Used</h2>
+                    <div class="tech-tags">
+                        <span class="tech-tag"><i class="fa-brands fa-python"></i> Python</span>
+                        <span class="tech-tag"><i class="fa-solid fa-flask-vial"></i> Flask</span>
+                        <span class="tech-tag"><i class="fa-solid fa-brain"></i> LangChain</span>
+                        <span class="tech-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> Gemini 2.5 Pro</span>
+                        <span class="tech-tag"><i class="fa-solid fa-key"></i> Unified OAuth2</span>
+                        <span class="tech-tag"><i class="fa-solid fa-database"></i> FAISS</span>
+                        <span class="tech-tag"><i class="fa-solid fa-server"></i> SQLite</span>
+                        <span class="tech-tag"><i class="fa-brands fa-html5"></i> HTML/CSS/JS</span>
+                        <span class="tech-tag"><i class="fa-solid fa-chart-scatter"></i> scikit-learn</span>
+                    </div>
+                </section>
+
+                <section class="about-section">
+                    <h2><i class="fa-solid fa-lightbulb"></i> Use Cases</h2>
+                    <div class="use-case-list">
+                        <div class="use-case-item">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <div>
+                                <strong>Academic Research Assistant</strong>
+                                <p>Upload research papers and query specific findings, methodologies, and conclusions.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="use-case-item">
+                            <i class="fa-solid fa-building"></i>
+                            <div>
+                                <strong>Enterprise Knowledge Base</strong>
+                                <p>Build an internal knowledge system from company documents for instant employee
+                                    queries.</p>
+                            </div>
+                        </div>
+                        <div class="use-case-item">
+                            <i class="fa-solid fa-scale-balanced"></i>
+                            <div>
+                                <strong>Legal / Technical Document Analysis</strong>
+                                <p>Analyze contracts, manuals, and technical specifications with AI-powered
+                                    understanding.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="about-section">
+                    <h2><i class="fa-solid fa-lock"></i> Security & Authorization</h2>
+                    <ul style="color: var(--text-secondary); line-height: 1.7; padding-left: 20px;">
+                        <li><strong>Secure Identity:</strong> Multi-field registration (Full Name, Mobile, Email) with <strong>Email OTP</strong> validation for all new users.</li>
+                        <li><strong>Explainable AI:</strong> Built-in Confidence meter highlighting RAG validity and source provenance.</li>
+                        <li><strong>PII Detector:</strong> Active regex-based scanning over all AI outputs to protect sensitive data.</li>
+                        <li><strong>Admin Control:</strong> Hierarchy-based session management (`admin`/`user`) with credit-scoped permissions.</li>
+                    </ul>
+                </section>
+
+                <section class="about-section">
+                    <h2><i class="fa-solid fa-rocket"></i> Future Expansion Plan</h2>
+                    <p>To preserve backend stability while ensuring scalability, the following features are actively
+                        mapped for Phase 2:</p>
+                    <ul style="color: var(--text-secondary); line-height: 1.7; padding-left: 20px;">
+                        <li><strong>Full Multi-Agent Orchestration:</strong> Upgrading prompt schemas into a fully
+                            collaborative Swarm format.</li>
+                        <li><strong>Knowledge Graph Integration:</strong> Transmuting FAISS data into Neo4j for
+                            reasoning.</li>
+                        <li><strong>Offline/Low-Resource Mode:</strong> Deploying open-source fallbacks for absolute
+                            data privacy.</li>
+                    </ul>
+                </section>
+
+                <footer class="about-footer">
+                    <p>Built with <i class="fa-solid fa-heart" style="color: var(--error);"></i> as a Final Year Major
+                        Project</p>
+                    <p class="hint">Intelligent Domain-Specific Knowledge Assistant using Advanced RAG Architecture</p>
+                </footer>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

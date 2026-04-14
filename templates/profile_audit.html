@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Audit | Smriti.ai</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0B0B0F;
+            --surface: #15161C;
+            --primary: #66FCF1;
+            --border: rgba(102, 252, 241, 0.2);
+            --text-dim: #8B949E;
+        }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #EEF2F5; margin: 0; padding: 40px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { margin-bottom: 40px; }
+        .header h1 { font-size: 32px; color: var(--primary); margin: 0; }
+        .audit-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 40px; text-align: center; }
+        .status-badge { display: inline-block; padding: 8px 16px; border-radius: 20px; background: rgba(102, 252, 241, 0.1); color: var(--primary); font-size: 14px; font-weight: 600; margin-bottom: 20px; }
+        .btn-audit { padding: 16px 40px; background: var(--primary); color: #0B0B0F; border: none; border-radius: 12px; font-weight: 700; font-size: 18px; cursor: pointer; transition: 0.3s; }
+        .btn-audit:disabled { background: #45A29E; opacity: 0.5; cursor: not-allowed; }
+        .results { display: none; margin-top: 40px; text-align: left; animation: slideUp 0.6s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .result-item { margin-bottom: 20px; }
+        .result-label { color: var(--primary); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .result-value { font-size: 18px; color: #EEF2F5; }
+        .loading { display: none; margin: 40px 0; }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(102, 252, 241, 0.1); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" style="color: var(--primary); text-decoration: none; font-size: 14px; display: inline-block; margin-bottom: 20px;"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+            <h1>Agentic Profile Audit</h1>
+            <p style="color: var(--text-dim);">The Profiler Agent will analyze your uploaded resume, extract skills, and sync details to your configured Google Sheet.</p>
+        </div>
+
+        <div class="audit-card">
+            <div class="status-badge">Premium Feature: 5 Credits</div>
+            <p style="margin-bottom: 30px; color: var(--text-dim);">Ready to audit your uploaded document? Make sure your resume is the latest upload.</p>
+            <button class="btn-audit" id="auditBtn" onclick="runAudit()">Run Agentic Audit <i class="fa-solid fa-sparkles"></i></button>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 20px; color: var(--primary);">Agent is parsing resume and updating Google Sheet...</p>
+            </div>
+
+            <div class="results" id="results">
+                <div style="background: rgba(102,252,241,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 30px;">
+                    <h3 style="margin-top: 0; color: var(--primary);">Audit Complete!</h3>
+                    <div id="resultContent"></div>
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 14px; color: var(--text-dim);">
+                        <i class="fa-solid fa-check-circle" style="color: #2ecc71;"></i> Data successfully appended to Google Sheet ID: ...XQjHGw
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function runAudit() {
+            const btn = document.getElementById('auditBtn');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const resultContent = document.getElementById('resultContent');
+
+            btn.disabled = true;
+            loading.style.display = 'block';
+            results.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/profile_audit', { method: 'POST' });
+                const data = await res.json();
+
+                if (data.error) {
+                    alert(data.error);
+                } else if (data.success) {
+                    const fields = data.data;
+                    resultContent.innerHTML = `
+                        <div class="result-item">
+                            <div class="result-label">Candidate Name</div>
+                            <div class="result-value">${fields.full_name}</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Experience</div>
+                            <div class="result-value">${fields.experience_years}</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Top Skills</div>
+                            <div class="result-value">${fields.top_skills}</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Social/LinkedIn</div>
+                            <div class="result-value">${fields.social_links}</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">AI Summary</div>
+                            <div class="result-value" style="font-size: 15px; line-height: 1.6;">${fields.summary}</div>
+                        </div>
+                    `;
+                    results.style.display = 'block';
+                }
+            } catch (err) {
+                alert("Audit failed. Check console for details.");
+            } finally {
+                loading.style.display = 'none';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

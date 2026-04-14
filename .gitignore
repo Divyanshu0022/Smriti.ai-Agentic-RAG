@@ -1,0 +1,42 @@
+# Environment variables
+.env
+
+# Virtual environment
+MPev/
+venv/
+env/
+dist/
+build/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local Database
+knowledge_base.db
+instance/
+
+# Search Index (FAISS)
+faiss_index/
+
+# User uploads
+uploads/
+
+# IDE settings
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation / Presentations (Optional - keep if you want them on GitHub)
+Smriti_AI_Presentation.pptx
+make_presenatation.py
+report.md
+presentation_report.md
+presentation.html
+skills.md
+Dockerfile

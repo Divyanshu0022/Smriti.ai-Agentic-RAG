@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing | AI Knowledge Worker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/premium.css">
+    <style>
+        body, html { margin: 0; padding: 0; min-height: 100vh; background: #080b12; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto !important; height: auto; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg, #080b12); }
+        ::-webkit-scrollbar-thumb { background: var(--border, rgba(102, 252, 241, 0.2)); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent, #66FCF1); }
+
+        /* Navbar */
+        .navbar { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 20px 60px; z-index: 1000; background: rgba(8, 11, 18, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); box-sizing: border-box; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: white; text-decoration: none; }
+        .nav-brand i { color: var(--accent); font-size: 24px; text-shadow: 0 0 10px var(--accent-glow); }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-secondary); font-size: 14px; font-weight: 500; transition: 0.3s; }
+        .nav-links a.active { color: var(--accent); font-weight: 700; border-bottom: 2px solid var(--accent); padding-bottom: 5px; }
+        .btn-login-nav { 
+            background: var(--accent); 
+            color: #000 !important; 
+            padding: 10px 24px; 
+            border-radius: 20px; 
+            font-weight: 700; 
+            text-decoration: none; 
+            font-size: 14px; 
+            transition: 0.4s; 
+            box-shadow: 0 0 10px rgba(102, 252, 241, 0.4); 
+            border: 1px solid transparent;
+            animation: pulse-glow 2s infinite;
+        }
+        .btn-login-nav:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 0 25px var(--accent-glow);
+            background: #ffffff;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 5px rgba(102, 252, 241, 0.4); }
+            50% { box-shadow: 0 0 20px rgba(102, 252, 241, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(102, 252, 241, 0.4); }
+        }
+
+        @keyframes mouse-scroll {
+            0% { top: 6px; opacity: 1; }
+            100% { top: 25px; opacity: 0; }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Hero */
+        .hero { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; z-index: 10; padding: 0 20px; }
+        .hero-title { font-family: 'Space Grotesk', sans-serif; font-size: 64px; font-weight: 700; background: linear-gradient(135deg, white, var(--accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 24px; line-height: 1.1; }
+        .hero-subtitle { font-size: 18px; color: var(--text-secondary); max-width: 700px; line-height: 1.6; margin-bottom: 40px; }
+        .hero-btns { display: flex; gap: 20px; }
+        .btn-primary-lg { background: transparent; border: 2px solid var(--accent); color: var(--accent); padding: 16px 40px; font-size: 18px; font-weight: 600; font-family: 'Space Grotesk', sans-serif; border-radius: 30px; cursor: pointer; transition: 0.3s; }
+        .btn-primary-lg:hover { background: var(--accent); color: #000; box-shadow: 0 0 30px var(--accent-glow); transform: scale(1.05); }
+
+        /* Sections General */
+        .section { padding: 120px 60px; position: relative; z-index: 10; color: white; max-width: 1200px; margin: 0 auto; opacity: 0; transform: translateY(40px); transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .section.visible { opacity: 1; transform: translateY(0); }
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: 40px; margin-bottom: 16px; background: linear-gradient(135deg, white, var(--accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .section-header p { color: var(--text-secondary); font-size: 16px; max-width: 600px; margin: 0 auto; }
+
+        /* Features Grid */
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .feature-card { background: rgba(19, 24, 38, 0.4); border: 1px solid var(--border); padding: 40px; border-radius: 20px; backdrop-filter: blur(10px); transition: 0.3s; }
+        .feature-card:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(102, 252, 241, 0.05); }
+        .feature-icon { width: 50px; height: 50px; border-radius: 12px; background: var(--accent-glow); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 24px; }
+        .feature-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 22px; margin-bottom: 16px; }
+        .feature-card p { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+
+        /* Architecture Flow */
+        .arch-flow { display: flex; flex-direction: column; gap: 24px; background: rgba(19, 24, 38, 0.4); padding: 40px; border-radius: 20px; border: 1px solid var(--border); }
+        .arch-step { display: flex; align-items: flex-start; gap: 20px; }
+        .arch-num { width: 36px; height: 36px; min-width: 36px; background: var(--accent); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+        .arch-text h4 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin: 0 0 4px 0; }
+        .arch-text p { color: var(--text-secondary); font-size: 14px; margin: 0; }
+
+        /* Blog Section */
+        .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+        .blog-card { background: rgba(19, 24, 38, 0.6); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; transition: 0.3s; display: flex; flex-direction: column; }
+        .blog-card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .blog-content { padding: 24px; flex: 1; }
+        .blog-date { font-size: 12px; color: var(--accent); font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
+        .blog-card h4 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin: 0 0 12px 0; line-height: 1.4; }
+        .blog-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .read-more { color: var(--accent); font-size: 13px; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+        .read-more:hover { gap: 10px; }
+
+        /* Contact & Footer */
+        .footer { background: #05070a; border-top: 1px solid var(--border); padding: 80px 60px 40px; text-align: center; }
+        .contact-info { display: flex; justify-content: center; gap: 40px; margin-bottom: 40px; }
+        .contact-item { display: flex; align-items: center; gap: 12px; color: var(--text-secondary); font-size: 15px; }
+        .contact-item i { color: var(--accent); font-size: 18px; }
+        .footer-divider { height: 1px; background: var(--border); margin-bottom: 40px; }
+        .copyright { color: var(--text-muted); font-size: 13px; }
+
+        /* Login Overlay */
+        .login-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(11, 16, 27, 0.85); backdrop-filter: blur(10px); z-index: 2000; display: flex; align-items: center; justify-content: center; clip-path: circle(0% at 50% 50%); visibility: hidden; }
+        .auth-card { background: var(--surface); border: 1px solid var(--border); padding: 40px; border-radius: 16px; width: 100%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); text-align: center; }
+        .auth-card i.main-icon { font-size: 48px; color: var(--accent); margin-bottom: 24px; }
+        .auth-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 28px; margin: 0 0 12px 0; }
+        .auth-card p.auth-sub { color: var(--text-secondary); font-size: 15px; margin-bottom: 32px; }
+        .form-group { text-align: left; margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 12px 16px; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: white; font-family: 'Inter'; box-sizing: border-box; font-size: 15px; transition: 0.3s; }
+        .form-group input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 10px var(--accent-glow); }
+        .btn-submit { width: 100%; padding: 14px; background: var(--accent); color: #000; border: none; border-radius: 10px; font-weight: 700; font-size: 16px; cursor: pointer; margin-bottom: 16px; transition: 0.3s; }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent-glow); }
+        .auth-links { font-size: 14px; color: var(--text-secondary); }
+        .auth-links a { color: var(--accent); text-decoration: none; font-weight: 600; }
+        .btn-close-auth { position: absolute; top: 20px; right: 20px; color: white; font-size: 24px; cursor: pointer; z-index: 2001; opacity: 0.7; transition: 0.3s; }
+        .btn-close-auth:hover { opacity: 1; transform: rotate(90deg); }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .navbar { padding: 20px; }
+            .hero-title { font-size: 48px; }
+            .section { padding: 80px 20px; }
+            .blog-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .blog-grid { grid-template-columns: 1fr; }
+            .contact-info { flex-direction: column; gap: 20px; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Particle & Mesh Background -->
+    <div class="mesh-bg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;">
+        <div class="mesh-orb orb1"></div>
+        <div class="mesh-orb orb2"></div>
+        <div class="mesh-orb orb3"></div>
+    </div>
+    <div id="tsparticles" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;"></div>
+
+    <nav class="navbar">
+        <a href="#" class="nav-brand">
+            <i class="fa-solid fa-brain"></i>
+            <span>Smriti.ai</span>
+        </a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#blog">Research</a>
+            <a href="#contact">Contact</a>
+            <a href="javascript:void(0)" class="btn-login-nav" onclick="openAuth()">Sign In</a>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="hero">
+            <h1 class="hero-title">Smriti.ai</h1>
+            <p class="hero-subtitle">Next-Gen Vector Indexing for Persistent Organizational Memory. Built with advanced RAG architecture using FAISS, Gemini Foundation Models, and Agentic Data Auditing.</p>
+            <div class="hero-btns">
+                <button class="btn-primary-lg" onclick="openAuth()">Get Started Now <i class="fa-solid fa-bolt" style="margin-left: 8px;"></i></button>
+            </div>
+            <!-- Mouse Scroll Indicator -->
+            <div class="scroll-indicator" style="position: absolute; bottom: 30px; display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--accent); opacity: 0.7;">
+                <span style="font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;">Scroll to Explore</span>
+                <div style="width: 24px; height: 40px; border: 2px solid var(--accent); border-radius: 12px; position: relative;">
+                    <div style="width: 4px; height: 8px; background: var(--accent); border-radius: 2px; position: absolute; left: 50%; transform: translateX(-50%); animation: mouse-scroll 2s infinite;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="section" id="features">
+            <div class="section-header">
+                <h2>RAG Powered Intelligence</h2>
+                <p>Equipping enterprises with context-aware, traceable, and explainable AI expertise derived purely from their internal document landscape.</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <h3>Semantic Vector Search</h3>
+                    <p>Go beyond keywords. We use FAISS and high-dimensional embeddings to understand the true meaning of your queries and documents.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3>Agentic Data Auditing</h3>
+                    <p>Deploy specialized agent personas like 'Risk Auditor' to scan documents for legal liabilities or 'Profile Expert' for professional insights.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-eye"></i></div>
+                    <h3>Explainable AI (XAI)</h3>
+                    <p>Total transparency. View every source chunk, similarity score, and a live confidence meter for every generated answer.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                    <h3>Comparison Mode</h3>
+                    <p>Validate the power of RAG. Compare AI answers with and without your document context side-by-side in real-time.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
+                    <h3>High Performance</h3>
+                    <p>Optimized with Gemini 2.5 Flash-Lite and intelligent caching for sub-second retrieval times even in large knowledge bases.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-file-export"></i></div>
+                    <h3>Agentic Workflows</h3>
+                    <p>One-click professional reports sent directly to your email. Turn raw document data into polished executive summaries instantly.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture Section -->
+        <section class="section" id="architecture">
+            <div class="section-header">
+                <h2>System Architecture</h2>
+                <p>A multi-layered pipeline designed for scalability, security, and precision reasoning over proprietary data.</p>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+                <div class="arch-flow">
+                    <div class="arch-step">
+                        <div class="arch-num">1</div>
+                        <div class="arch-text">
+                            <h4>Document Ingestion</h4>
+                            <p>PDF/TXT parsing with recursive text splitting and automated summarization.</p>
+                        </div>
+                    </div>
+                    <div class="arch-step">
+                        <div class="arch-num">2</div>
+                        <div class="arch-text">
+                            <h4>Neural Embedding</h4>
+                            <p>Converting text chunks into neural vector representations using Gemini Embeddings.</p>
+                        </div>
+                    </div>
+                    <div class="arch-step">
+                        <div class="arch-num">3</div>
+                        <div class="arch-text">
+                            <h4>Vector Indexing</h4>
+                            <p>High-speed similarity search enabled by FAISS (Facebook AI Similarity Search) with SQLite metadata storage.</p>
+                        </div>
+                    </div>
+                    <div class="arch-step">
+                        <div class="arch-num">4</div>
+                        <div class="arch-text">
+                            <h4>Contextual Retrieval</h4>
+                            <p>Top-K similarity ranking and context construction for the LLM prompt.</p>
+                        </div>
+                    </div>
+                    <div class="arch-step">
+                        <div class="arch-num">5</div>
+                        <div class="arch-text">
+                            <h4>LLM Reasoning</h4>
+                            <p>Grounded generation using Gemini 2.5 with cross-referenced source citations.</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: left;">
+                    <h3 style="font-family: 'Space Grotesk'; font-size: 32px; color: var(--accent); margin-bottom: 24px;">Advanced Technical Stack</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.8; font-size: 16px; margin-bottom: 30px;">
+                        The system is engineered for stability and performance. We utilize <strong>FAISS</strong> for sub-second vector lookups across millions of chunks, and <strong>Gemini 2.5</strong> as the core reasoning engine for its superior context window and logic capabilities.
+                    </p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                        <span class="meta-chip" style="background: rgba(102,252,241,0.1); border-color: var(--accent); color: var(--accent); padding: 8px 16px; border-radius: 8px;">Python 3.10+</span>
+                        <span class="meta-chip" style="background: rgba(102,252,241,0.1); border-color: var(--accent); color: var(--accent); padding: 8px 16px; border-radius: 8px;">FAISS Vector Store</span>
+                        <span class="meta-chip" style="background: rgba(102,252,241,0.1); border-color: var(--accent); color: var(--accent); padding: 8px 16px; border-radius: 8px;">Gemini Foundation Models</span>
+                        <span class="meta-chip" style="background: rgba(102,252,241,0.1); border-color: var(--accent); color: var(--accent); padding: 8px 16px; border-radius: 8px;">Flask Backend</span>
+                        <span class="meta-chip" style="background: rgba(102,252,241,0.1); border-color: var(--accent); color: var(--accent); padding: 8px 16px; border-radius: 8px;">GSAP Animations</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section class="section" id="blog">
+            <div class="section-header">
+                <h2>RAG & LLM Research Insights</h2>
+                <p>Stay updated with the latest advancements in Retrieval-Augmented Generation, Agentic Workflows, and Domain-Specific AI.</p>
+            </div>
+            
+            <div class="blog-grid" id="blogGrid">
+                {% for blog in blogs %}
+                <div class="blog-card" style="{{ 'display:none;' if loop.index > 3 else 'display:flex;' }}">
+                    <div class="blog-content">
+                        <div class="blog-date">{{ blog.created_at[:10] }} · By {{ blog.author }}</div>
+                        <h4>{{ blog.title }}</h4>
+                        <p>{{ blog.content }}</p>
+                        <a href="javascript:void(0)" class="read-more" onclick='openBlogById("{{ blog.id }}")'>Read Full Research <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if blogs|length > 3 %}
+            <div style="text-align: center;">
+                <button class="btn-ghost" id="loadMoreBlogs" onclick="toggleAllBlogs()" style="color: var(--accent); font-weight: 600; cursor: pointer;">View All Research Papers <i class="fa-solid fa-plus" style="margin-left: 8px;"></i></button>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Contact Section -->
+        <section class="section" id="contact" style="padding-bottom: 40px;">
+            <div class="section-header" style="margin-bottom: 40px;">
+                <h2>Get in Touch</h2>
+                <p>Have questions about the project or RAG implementation? Reach out to us.</p>
+            </div>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>divyanshu022.contact@gmail.com</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>Madhubani, Bihar, India</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-divider"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div class="nav-brand">
+                <i class="fa-solid fa-brain"></i>
+                <span>Smriti.ai</span>
+            </div>
+            <div class="copyright">
+                &copy; 2026 Smriti.ai Framework. Built as a Final Year Major Project.
+            </div>
+            <div style="display: flex; gap: 20px; font-size: 18px; color: var(--text-secondary);">
+                <i class="fa-brands fa-github" style="cursor: pointer;"></i>
+                <i class="fa-brands fa-linkedin" style="cursor: pointer;"></i>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Overlay -->
+    <div class="login-overlay" id="loginOverlay">
+        <i class="fa-solid fa-xmark btn-close-auth" onclick="closeAuth()"></i>
+        <div class="auth-card" id="authBox">
+            <i class="fa-solid fa-fingerprint main-icon"></i>
+            <h3>Welcome Back</h3>
+            <p class="auth-sub">Authenticate to access premium RAG features and agentic auditing actions.</p>
+            
+            {% if error %}
+            <div class="error-msg" style="color: #ff6b6b; margin-bottom: 20px; font-size: 14px; background: rgba(255,107,107,0.1); padding: 12px; border-radius: 8px;">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" action="/login">
+                <div class="form-group">
+                    <label>Username or Email</label>
+                    <input type="text" name="username" placeholder="Enter your credentials" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-submit">Sign In</button>
+            </form>
+
+            <div style="margin: 20px 0; display: flex; align-items: center; gap: 10px;">
+                <div style="flex: 1; height: 1px; background: var(--border);"></div>
+                <span style="font-size: 11px; color: var(--text-secondary); letter-spacing: 1px;">OR</span>
+                <div style="flex: 1; height: 1px; background: var(--border);"></div>
+            </div>
+
+            <button type="button" class="btn-submit" style="background: white; color: #000; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 24px; cursor: not-allowed; opacity: 0.6;" title="Future Update">
+                <i class="fa-brands fa-google" style="color: #4285F4; margin: 0; font-size: 18px;"></i>
+                Continue with Google
+            </button>
+            
+            <div class="auth-links">
+                Don't have an account? <a href="/register">Join Smriti.ai</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blog Read Modal (Overlay) -->
+    <div id="blogModal" class="login-overlay" style="z-index: 3000;">
+        <i class="fa-solid fa-xmark btn-close-auth" onclick="gsap.to('#blogModal', {clipPath: 'circle(0% at 50% 50%)', duration: 0.8, onComplete: () => { document.getElementById('blogModal').style.visibility = 'hidden'; }})" style="z-index: 3001;"></i>
+        <div class="auth-card" style="max-width: 800px; text-align: left; background: rgba(13, 17, 28, 0.98);">
+            <div id="modalDate" style="font-size: 12px; color: var(--accent); margin-bottom: 8px; font-weight: 600;"></div>
+            <h2 id="modalTitle" style="font-family: 'Space Grotesk'; font-size: 28px; color: white; margin-bottom: 24px;"></h2>
+            <div id="modalContent" style="color: var(--text-secondary); font-size: 16px; line-height: 1.8; max-height: 400px; overflow-y: auto; padding-right: 15px;"></div>
+        </div>
+    </div>
+
+    <!-- Embedded Blog Data for JS -->
+    <script id="blog-data" type="application/json">
+        {{ blogs|tojson|safe }}
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+    <script>
+        // Init Particles
+        tsParticles.load("tsparticles", {
+            fpsLimit: 60,
+            particles: {
+                number: { value: 40, density: { enable: true, area: 800 } },
+                color: { value: ["#66FCF1", "#45A29E"] },
+                shape: { type: "circle" },
+                opacity: { value: 0.2 },
+                size: { value: { min: 1, max: 2 } },
+                move: { enable: true, speed: 0.5, direction: "none", random: true, outModes: "out" },
+                links: { enable: true, color: "#66FCF1", distance: 200, opacity: 0.1, width: 1 }
+            }
+        });
+
+        const loginOverlay = document.getElementById('loginOverlay');
+        const authBox = document.getElementById('authBox');
+
+        function openAuth() {
+            gsap.set(loginOverlay, { visibility: "visible" });
+            gsap.to(loginOverlay, {
+                clipPath: "circle(150% at 50% 50%)",
+                duration: 1,
+                ease: "power4.inOut"
+            });
+            gsap.from(authBox, {
+                y: 50,
+                opacity: 0,
+                duration: 0.6,
+                delay: 0.4,
+                ease: "back.out(1.4)"
+            });
+        }
+
+        function closeAuth() {
+            gsap.to(loginOverlay, {
+                clipPath: "circle(0% at 50% 50%)",
+                duration: 0.8,
+                ease: "power4.inOut",
+                onComplete: () => {
+                    gsap.set(loginOverlay, { visibility: "hidden" });
+                }
+            });
+        }
+
+        function openBlogById(id) {
+            const blogs = JSON.parse(document.getElementById('blog-data').textContent);
+            const blog = blogs.find(b => b.id == id);
+            if (blog) showFullBlog(blog);
+        }
+
+        function showFullBlog(blog) {
+            const modal = document.getElementById('blogModal');
+            document.getElementById('modalTitle').innerText = blog.title;
+            document.getElementById('modalDate').innerText = blog.created_at.substring(0, 10) + " · By " + blog.author;
+            document.getElementById('modalContent').innerText = blog.content;
+            
+            gsap.set(modal, { visibility: "visible" });
+            gsap.to(modal, {
+                clipPath: "circle(150% at 50% 50%)",
+                duration: 0.8,
+                ease: "power2.inOut"
+            });
+        }
+
+        function toggleAllBlogs() {
+            const grid = document.getElementById('blogGrid');
+            const cards = grid.querySelectorAll('.blog-card');
+            const btn = document.getElementById('loadMoreBlogs');
+            const isShowingAll = btn.innerText.includes('Less');
+            
+            cards.forEach((card, i) => {
+                if (i >= 3) {
+                    if (isShowingAll) {
+                        gsap.to(card, { opacity: 0, height: 0, padding: 0, margin: 0, duration: 0.4, onComplete: () => card.style.display = 'none' });
+                    } else {
+                        card.style.display = 'flex';
+                        gsap.from(card, { opacity: 0, y: 20, duration: 0.5, delay: (i-3)*0.1 });
+                    }
+                }
+            });
+            
+            btn.innerHTML = isShowingAll ? 'View All Research Papers <i class="fa-solid fa-plus" style="margin-left: 8px;"></i>' : 'Show Less Research <i class="fa-solid fa-minus" style="margin-left: 8px;"></i>';
+        }
+
+        // Handle errors auto-opening login
+        {% if error %}
+            window.addEventListener('load', openAuth);
+        {% endif %}
+
+        // Simple intersection observer for ScrollSpy and Reveal
+        const observerOptions = {
+            threshold: 0.2
+        };
+
+        const navLinks = document.querySelectorAll('.nav-links a:not(.btn-login-nav)');
+        const sections = document.querySelectorAll('.section, .hero');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Reveal section
+                    if (entry.target.classList.contains('section')) {
+                        entry.target.classList.add('visible');
+                    }
+                    
+                    // Update Nav
+                    const id = entry.target.getAttribute('id');
+                    if (id) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === '#' + id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(sec => observer.observe(sec));
+
+        // Smooth navbar appearance
+        gsap.from(".navbar", { y: -100, opacity: 0, duration: 1, delay: 0.5, ease: "power4.out" });
+        gsap.from(".hero-title", { scale: 0.8, opacity: 0, duration: 1.2, ease: "power4.out" });
+        gsap.from(".hero-subtitle", { y: 20, opacity: 0, duration: 1, delay: 0.3 });
+        gsap.from(".hero-btns", { y: 20, opacity: 0, duration: 1, delay: 0.5 });
+    </script>
+</body>
+</html>

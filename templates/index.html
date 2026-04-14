@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smriti.ai | RAG Assistant</title>
+    <meta name="description" content="Smriti.ai: Next-Gen Vector Indexing for Persistent Organizational Memory.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fa-solid fa-brain"></i> Smriti.ai</h2>
+            </div>
+            
+            {% if session.get('user_id') %}
+            <div style="padding: 10px 20px; color: var(--text-secondary); font-size: 13px; border-bottom: 1px solid var(--border);">
+                <i class="fa-solid fa-circle-user"></i> Logged in as <strong>{{ session.get('username') }}</strong>
+                <div style="margin-top: 4px; color: #ffb86c;"><i class="fa-solid fa-coins"></i> Credits: {{ session.get('credits', 0) }}</div>
+            </div>
+            {% endif %}
+
+            <nav class="sidebar-nav">
+                <a href="/" class="nav-link active"><i class="fa-solid fa-comments"></i> Chat Assistant</a>
+                <a href="/profile_audit" class="nav-link"><i class="fa-solid fa-user-check"></i> Profile Audit</a>
+                <a href="/payment" class="nav-link" style="color: #ffb86c;"><i class="fa-solid fa-coins"></i> Buy Credits</a>
+                <a href="/about" class="nav-link"><i class="fa-solid fa-circle-info"></i> About Project</a>
+                <a href="/premium" class="nav-link" style="color: #66FCF1; font-weight: 600;"><i class="fa-solid fa-wand-magic-sparkles"></i> Premium View</a>
+                {% if session.get('user_id') %}
+                    {% if session.get('role') == 'admin' %}
+                    <a href="/admin" class="nav-link" style="color: #ffb86c;"><i class="fa-solid fa-shield-halved"></i> Admin Portal</a>
+                    {% endif %}
+                    <a href="/logout" class="nav-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                {% else %}
+                    <a href="/login" class="nav-link"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+                {% endif %}
+            </nav>
+
+            <!-- Tab Switcher for sidebar panels -->
+            <div class="sidebar-tabs">
+                <button class="sidebar-tab active" data-tab="tab-kb"><i class="fa-solid fa-database"></i> KB</button>
+                <button class="sidebar-tab" data-tab="tab-summaries"><i class="fa-solid fa-file-lines"></i> Summaries</button>
+                <button class="sidebar-tab" data-tab="tab-history"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
+            </div>
+
+            <!-- Tab: Knowledge Base -->
+            <div class="sidebar-panel active" id="tab-kb">
+                <!-- Action Hub - THE UNIQUE FEATURE -->
+                <div class="sidebar-section audit-hub">
+                    <h3><i class="fa-solid fa-bolt-lightning"></i> Agentic Actions</h3>
+                    <p class="hint">One-click deep analysis and professional output.</p>
+                    <div class="action-grid">
+                        <button class="action-pill audit-btn" data-type="risk" title="Find Legal/Security Risks">
+                            <i class="fa-solid fa-shield-halved"></i> Risk Audit
+                        </button>
+                        <button class="action-pill audit-btn" data-type="legal" title="Indian IT Act Compliance">
+                            <i class="fa-solid fa-scale-balanced"></i> Legal Audit
+                        </button>
+                        <button class="action-pill audit-btn" data-type="professional" title="Extract Professional Profile">
+                            <i class="fa-solid fa-user-tie"></i> Profile Expert
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3><i class="fa-solid fa-database"></i> Knowledge Base</h3>
+                    <p class="hint">Upload PDF or Text files to build the knowledge graph.</p>
+                    
+                    <div id="kbStatus" class="kb-status">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span id="kbStatusText">Checking...</span>
+                    </div>
+
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <label class="upload-area" for="fileInput">
+                            <i class="fa-solid fa-cloud-arrow-up cloud-icon"></i>
+                            <span>Select Document</span>
+                            <input type="file" id="fileInput" name="file" accept=".pdf,.txt" required>
+                        </label>
+                        <button type="submit" class="btn primary-btn w-full" id="uploadBtn">
+                            <i class="fa-solid fa-gear fa-spin" style="display: none;" id="uploadSpin"></i>
+                            <span>Ingest Data</span>
+                        </button>
+                    </form>
+                    <div id="uploadStatus" class="status-msg"></div>
+                    <button id="clearKbBtn" class="btn danger-btn w-full" style="margin-top: 8px; display: none;">
+                        <i class="fa-solid fa-trash-can"></i> Clear Knowledge Base
+                    </button>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3><i class="fa-solid fa-chart-line"></i> Evaluation Metrics</h3>
+                    <button id="evalBtn" class="btn secondary-btn w-full">Fetch Metrics & t-SNE</button>
+                    <div id="evalData" class="eval-data" style="display: none;">
+                        <div class="metric-card">
+                            <span class="metric-label">MRR</span>
+                            <span class="metric-value" id="mrrValue">-</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">NDCG</span>
+                            <span class="metric-value" id="ndcgValue">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Summaries -->
+            <div class="sidebar-panel" id="tab-summaries">
+                <div class="sidebar-section">
+                    <h3><i class="fa-solid fa-file-lines"></i> Document Summaries</h3>
+                    <p class="hint">Auto-generated summaries for uploaded documents.</p>
+                    <div id="summariesList" class="summaries-list">
+                        <p class="hint text-center">No summaries yet. Upload a document first.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: History -->
+            <div class="sidebar-panel" id="tab-history">
+                <div class="sidebar-section">
+                    <h3><i class="fa-solid fa-clock-rotate-left"></i> Query History</h3>
+                    <div id="queryStats" class="query-stats"></div>
+                    <div id="historyList" class="history-list">
+                        <p class="hint text-center">No queries yet.</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="main-content">
+            <header class="chat-header">
+                <div class="chat-header-row">
+                    <div>
+                        <div class="model-badge">Gemini 2.5 Pro + FAISS</div>
+                        <h1>Query Assistant</h1>
+                    </div>
+                    <div class="header-controls">
+                        <!-- Model Selector -->
+                        <div class="model-select-wrapper">
+                            <i class="fa-solid fa-microchip"></i>
+                            <select id="modelSelector" class="form-select">
+                                <option value="gemini-2.5-pro" selected>Gemini 2.5 Pro ⭐</option>
+                                <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                                <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite ⚡</option>
+                                <option value="gemini-2.5-flash-preview-04-17">Gemini 2.5 Flash (Preview)</option>
+                                <option value="gemini-2.5-pro-preview-03-25">Gemini 2.5 Pro (Preview)</option>
+                                <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                            </select>
+                        </div>
+
+                        <!-- Mode Switcher -->
+                        <div class="mode-select-wrapper">
+                            <select id="chatModeSelector" class="form-select">
+                                <option value="rag">📚 Standard RAG</option>
+                                <option value="long_context">⚡ Long Context (No-Vector)</option>
+                                <option value="direct">🧠 Direct LLM</option>
+                            </select>
+                        </div>
+                        
+                        <div class="v-divider"></div>
+
+                        <!-- Compare Toggle -->
+                        <div class="mode-toggle" title="Compare RAG vs Direct LLM">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="compareToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="toggle-text" id="modeText">RAG Mode</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="chat-container" id="chatContainer">
+                <div class="message ai-msg welcome-msg">
+                    <div class="msg-avatar"><i class="fa-solid fa-robot"></i></div>
+                    <div class="msg-content">Hello! I'm your AI Knowledge Context Assistant. Upload documents on the left menu, then ask me anything about them! You can also enable <strong>Comparison Mode</strong> to see RAG vs Direct LLM responses side by side.</div>
+                </div>
+            </div>
+
+            <div class="chat-input-wrapper">
+                <form id="chatForm" class="chat-form">
+                    <input type="text" id="queryInput" placeholder="Ask a question..." required autocomplete="off">
+                    <button type="submit" id="sendBtn" class="send-btn">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </main>
+        
+        <!-- Modal for t-SNE Visualization -->
+        <div id="tsneModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h3>Embeddings Map</h3>
+                <div id="tsneImgContainer">
+                    <p class="hint text-center">Loading or not enough data...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

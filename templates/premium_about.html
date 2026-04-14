@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About | Smriti.ai — Premium</title>
+  <meta name="description" content="Smriti.ai: Next-Gen Vector Indexing for Persistent Organizational Memory." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Libs -->
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <link rel="stylesheet" href="/static/css/premium.css" />
+  <style>
+    /* Specific styles for About page */
+    .about-chat-area {
+      padding: 30px 40px;
+      overflow-y: auto;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .about-header {
+      margin-bottom: 40px;
+      text-align: center;
+      animation: fadeInUp 0.6s ease;
+    }
+
+    .about-header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--text-primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 12px 0 8px;
+    }
+
+    .mbadge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .about-section {
+      margin-bottom: 40px;
+      animation: fadeInUp 0.6s ease backwards;
+    }
+
+    .about-section h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .about-section h2 i {
+      color: var(--accent);
+    }
+
+    .about-section p {
+      color: var(--text-secondary);
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--surface-solid);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px var(--accent-glow);
+      border-color: var(--accent);
+    }
+
+    .feature-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .feature-card h3 {
+      font-size: 15px;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .feature-card p {
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .tech-tag {
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: var(--surface-solid);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tech-tag i {
+      color: var(--accent);
+      font-size: 15px;
+    }
+
+    .arch-flow {
+      background: var(--surface-solid);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .arch-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .arch-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .arch-step strong {
+      color: var(--text-primary);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .arch-step span {
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Particle Canvas -->
+  <div id="tsparticles"></div>
+
+  <!-- Animated Mesh Background -->
+  <div class="mesh-bg">
+    <div class="mesh-orb orb1"></div>
+    <div class="mesh-orb orb2"></div>
+    <div class="mesh-orb orb3"></div>
+  </div>
+
+  <!-- App Shell -->
+  <div class="app-shell" id="appShell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar glass" id="sidebar">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-brain"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">Smriti.ai</span>
+          <span class="brand-badge">Premium</span>
+        </div>
+      </div>
+
+      <!-- Nav -->
+      <nav class="sidebar-nav">
+        <a href="/about" class="nav-item" id="navBasic" title="Classic View">
+          <i class="fa-solid fa-toggle-on"></i>
+          <span>Classic View</span>
+        </a>
+        <a href="/premium" class="nav-item" id="navChat" title="Chat Assistant">
+          <i class="fa-solid fa-comments"></i>
+          <span>Chat Assistant</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-panel">
+
+      <!-- Header -->
+      <header class="main-header glass">
+        <div class="header-left">
+          <button class="btn-icon sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+        <div class="header-right">
+          <!-- Themes -->
+          <div class="theme-switcher">
+            <button class="theme-btn active" data-theme="dark" title="Dark"><i class="fa-solid fa-moon"></i></button>
+            <button class="theme-btn" data-theme="blue" title="Blue"><i class="fa-solid fa-droplet"></i></button>
+            <button class="theme-btn" data-theme="red" title="Red"><i class="fa-solid fa-fire"></i></button>
+            <button class="theme-btn" data-theme="white" title="White"><i class="fa-solid fa-sun"></i></button>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT AREA -->
+      <section class="about-chat-area" id="aboutContainer">
+        <header class="about-header">
+          <span class="mbadge">Final Year Major Project</span>
+          <h1>Smriti.ai</h1>
+          <p style="color: var(--text-secondary)">Using Advanced RAG Architecture</p>
+        </header>
+
+        <div class="about-section" style="animation-delay: 0.1s;">
+          <h2><i class="fa-solid fa-bullseye"></i> Project Overview</h2>
+          <p>This project is an advanced AI-powered knowledge assistant built using <strong>Retrieval-Augmented
+              Generation (RAG)</strong>. It enables users to upload domain-specific documents and interact with them
+            through natural language queries — with full transparency into how answers are generated.</p>
+        </div>
+
+        <div class="about-section" style="animation-delay: 0.2s;">
+          <h2><i class="fa-solid fa-star"></i> Key Highlights</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-icon-box"><i class="fa-solid fa-robot"></i></div>
+              <h3>Context-Aware Answers</h3>
+              <p>LLM-powered generation grounded in uploaded document context using RAG architecture.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-box"><i class="fa-solid fa-eye"></i></div>
+              <h3>Explainable AI (XAI)</h3>
+              <p>Transparent retrieval with similarity scores, source attribution, and chunk-level traceability.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-box"><i class="fa-solid fa-bolt-lightning"></i></div>
+              <h3>Agentic Actions</h3>
+              <p>Specialized agent prompts for automated Risk Auditing and Professional Profile extraction direct to
+                email.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-box"><i class="fa-solid fa-scale-balanced"></i></div>
+              <h3>Comparison Mode</h3>
+              <p>Side-by-side comparison of RAG-augmented vs Direct LLM responses to demonstrate exact RAG value.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-section" style="animation-delay: 0.3s;">
+          <h2><i class="fa-solid fa-layer-group"></i> System Architecture</h2>
+          <div class="arch-flow">
+            <div class="arch-step">
+              <div class="arch-num">1</div>
+              <div><strong>Document Ingestion</strong><span>Upload PDF/TXT → Parse & Clean & Summarize</span></div>
+            </div>
+            <div class="arch-step">
+              <div class="arch-num">2</div>
+              <div><strong>Chunking & Embedding</strong><span>Recursive splitting → Gemini Embeddings</span></div>
+            </div>
+            <div class="arch-step">
+              <div class="arch-num">3</div>
+              <div><strong>Vector Storage & SQLite</strong><span>FAISS Indexing + relational storage for metrics</span>
+              </div>
+            </div>
+            <div class="arch-step">
+              <div class="arch-num">4</div>
+              <div><strong>Retrieval & Ranking</strong><span>Top-K similarity search + chunk scoring</span></div>
+            </div>
+            <div class="arch-step">
+              <div class="arch-num">5</div>
+              <div><strong>LLM Generation & Export</strong><span>Gemini 2.5 Flash-Lite reasoning + Email
+                  integration</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-section" style="animation-delay: 0.4s;">
+          <h2><i class="fa-solid fa-lock"></i> Security & Authorization</h2>
+          <div class="feature-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="feature-card">
+              <h3>Explainable AI Validator</h3>
+              <p>UI components map mathematical FAISS vector distances into clear percentage confidence metrics.</p>
+            </div>
+            <div class="feature-card">
+              <h3>PII Sanitization</h3>
+              <p>Middleware prevents excessive leakage of Social Security, Phones, and Emails.</p>
+            </div>
+            <div class="feature-card">
+              <h3>Administrative Sandbox</h3>
+              <p>Role-based access protects premium computational actions from unbounded usage.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-section" style="animation-delay: 0.5s;">
+          <h2><i class="fa-solid fa-rocket"></i> Future Expansion Plan</h2>
+          <div class="tech-tags">
+            <span class="tech-tag" style="border-color: #ffb86c;"><i class="fa-solid fa-people-group"></i> Multi-Agent
+              Swarm Logic</span>
+            <span class="tech-tag" style="border-color: #8be9fd;"><i class="fa-solid fa-diagram-project"></i> Neo4j
+              Knowledge Graphs</span>
+            <span class="tech-tag" style="border-color: #50fa7b;"><i class="fa-solid fa-server"></i> Local LLaMA
+              Fallback</span>
+          </div>
+        </div>
+
+        <div class="about-section" style="animation-delay: 0.6s;">
+          <h2><i class="fa-solid fa-microchip"></i> Technologies Used</h2>
+          <div class="tech-tags">
+            <span class="tech-tag"><i class="fa-brands fa-python"></i> Python</span>
+            <span class="tech-tag"><i class="fa-solid fa-flask-vial"></i> Flask</span>
+            <span class="tech-tag"><i class="fa-solid fa-brain"></i> LangChain</span>
+            <span class="tech-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> Gemini 2.5</span>
+            <span class="tech-tag"><i class="fa-solid fa-database"></i> FAISS</span>
+            <span class="tech-tag"><i class="fa-solid fa-server"></i> SQLite</span>
+            <span class="tech-tag"><i class="fa-brands fa-html5"></i> Web UI (GSAP)</span>
+            <span class="tech-tag"><i class="fa-solid fa-chart-scatter"></i> scikit-learn</span>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // ─── Theme Management ────────────────────────────────────
+    const themeBtns = document.querySelectorAll('.theme-btn');
+    const htmlEl = document.documentElement;
+
+    themeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        themeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const theme = btn.getAttribute('data-theme');
+        htmlEl.setAttribute('data-theme', theme);
+        localStorage.setItem('ai_worker_theme', theme);
+        gsap.fromTo("body", { opacity: 0.8 }, { duration: 0.5, opacity: 1, ease: "power2.out" });
+      });
+    });
+
+    const savedTheme = localStorage.getItem('ai_worker_theme');
+    if (savedTheme) {
+      htmlEl.setAttribute('data-theme', savedTheme);
+      themeBtns.forEach(b => {
+        if (b.getAttribute('data-theme') === savedTheme) b.classList.add('active');
+        else b.classList.remove('active');
+      });
+    }
+
+    // ─── Particles ───────────────────────────────────────────
+    async function loadParticles() {
+      await tsParticles.load("tsparticles", {
+        fpsLimit: 60,
+        interactivity: {
+          events: { onHover: { enable: true, mode: "repulse" }, resize: true },
+          modes: { repulse: { distance: 100, duration: 0.4 } }
+        },
+        particles: {
+          color: { value: "#ffffff" },
+          links: { color: "#ffffff", distance: 150, enable: true, opacity: 0.35, width: 2.5 },
+          move: { direction: "none", enable: true, outModes: { default: "bounce" }, random: false, speed: 0.8, straight: false },
+          number: { density: { enable: true, area: 800 }, value: 40 },
+          opacity: { value: 0.1 },
+          shape: { type: "circle" },
+          size: { value: { min: 1, max: 2 } }
+        },
+        detectRetina: true
+      });
+    }
+    window.addEventListener('DOMContentLoaded', loadParticles);
+
+    // ─── Sidebar Toggle ──────────────────────────────────────
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Credits | Smriti.ai</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0B0B0F;
+            --surface: #15161C;
+            --primary: #66FCF1;
+            --border: rgba(102, 252, 241, 0.2);
+        }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #EEF2F5; margin: 0; padding: 40px; display: flex; justify-content: center; }
+        .payment-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 40px; width: 100%; max-width: 500px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { color: var(--primary); margin: 0; font-size: 28px; }
+        .price-box { background: rgba(102, 252, 241, 0.1); border: 1px solid var(--primary); border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 30px; }
+        .price-box span { font-size: 36px; font-weight: 600; color: var(--primary); }
+        .qr-section { text-align: center; margin-bottom: 30px; padding: 20px; background: white; border-radius: 12px; display: inline-block; width: 100%; box-sizing: border-box; }
+        .qr-section img { width: 200px; height: 200px; }
+        .upi-info { margin-top: 10px; color: #000; font-weight: 600; font-size: 14px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 14px; color: #8B949E; margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 8px; color: white; font-size: 16px; box-sizing: border-box; }
+        .btn-pay { width: 100%; padding: 15px; background: var(--primary); color: #0B0B0F; border: none; border-radius: 8px; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .btn-pay:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 252, 241, 0.4); }
+    </style>
+</head>
+<body>
+    <div class="payment-card">
+        <div class="header">
+            <h1>Top Up Credits</h1>
+            <p style="color: #8B949E;">1 Credit = ₹1.00 (Minimum 5 Credits)</p>
+        </div>
+
+        <div class="price-box">
+            <p style="margin: 0; font-size: 14px; color: #8B949E;">Amount Payable</p>
+            <span id="displayAmount">₹5.00</span>
+        </div>
+
+        <div class="qr-section">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=divyanshu.mithilastack@okaxis&pn=Divyanshu&am=5&cu=INR" alt="UPI QR">
+            <div class="upi-info">VPA: divyanshu.mithilastack@okaxis</div>
+        </div>
+
+        <div class="form-group">
+            <label>Credits to Add</label>
+            <input type="number" id="creditAmount" value="5" min="5" oninput="updateQR(this.value)">
+        </div>
+
+        <div class="form-group">
+            <label>Transaction UTR Number (12 Digits)</label>
+            <input type="text" id="utrNumber" placeholder="Enter UTR from payment history" maxlength="12">
+        </div>
+
+        <button class="btn-pay" onclick="submitPayment()">Submit UTR for Approval</button>
+        
+        <p style="text-align: center; font-size: 12px; color: #45A29E; margin-top: 20px;">
+            <i class="fa-solid fa-shield-halved"></i> Payment is dummy. Admin will verify UTR and approve credits.
+        </p>
+    </div>
+
+    <script>
+        function updateQR(amt) {
+            if (amt < 5) amt = 5;
+            document.getElementById('displayAmount').innerText = '₹' + parseFloat(amt).toFixed(2);
+            const qrImg = document.querySelector('.qr-section img');
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=divyanshu.mithilastack@okaxis&pn=Divyanshu&am=${amt}&cu=INR`;
+        }
+
+        async function submitPayment() {
+            const amt = document.getElementById('creditAmount').value;
+            const utr = document.getElementById('utrNumber').value;
+
+            if (utr.length < 10) {
+                alert("Please enter a valid UTR number.");
+                return;
+            }
+
+            const res = await fetch('/api/request_credits', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: amt, utr_number: utr })
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                alert(data.message);
+                window.location.href = '/';
+            } else {
+                alert(data.error);
+            }
+        }
+    </script>
+</body>
+</html>

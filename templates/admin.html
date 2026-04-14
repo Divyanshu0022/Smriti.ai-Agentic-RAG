@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Smriti.ai</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/premium.css">
+    <style>
+        :root {
+            --bg: #0b0f19;
+            --surface: #131826;
+            --border: rgba(102, 252, 241, 0.2);
+            --accent: #66FCF1;
+            --text-main: #f3f4f6;
+            --text-mut: #9ca3af;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 40px; overflow-y: auto !important; height: auto; }
+        .container { max-width: 1000px; margin: 0 auto; position: relative; z-index: 10; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .header h1 { font-family: 'Space Grotesk', sans-serif; margin: 0; color: var(--accent); }
+        .nav-links a { color: var(--text-main); text-decoration: none; margin-left: 20px; font-size: 14px; }
+        .nav-links a:hover { color: var(--accent); }
+        .card { background: rgba(15,20,35,0.7); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 30px; }
+        .card h2 { margin-top: 0; font-family: 'Space Grotesk'; font-size: 18px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; color: white; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
+        th { color: var(--text-mut); font-weight: 500; }
+        .btn { padding: 6px 12px; background: var(--accent); color: #000; border: none; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; }
+        .btn-reject { background: #ff4757; color: white; }
+    </style>
+</head>
+<body>
+    <!-- Premium Background -->
+    <div class="mesh-bg">
+        <div class="mesh-orb orb1"></div>
+        <div class="mesh-orb orb2"></div>
+        <div class="mesh-orb orb3"></div>
+    </div>
+    <div id="tsparticles"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fa-solid fa-shield-halved"></i> Admin Portal</h1>
+            <div class="nav-links">
+                <a href="/"><i class="fa-solid fa-house"></i> Home</a>
+                <a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Pending Credit Requests</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Req ID</th>
+                        <th>User</th>
+                        <th>Amount Requested</th>
+                        <th>UTR Number</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in reqs %}
+                    <tr id="req-{{ req.id }}">
+                        <td>{{ req.id }}</td>
+                        <td>{{ req.username }}</td>
+                        <td>+{{ req.amount }} credits</td>
+                        <td style="color: var(--accent); font-family: monospace; font-weight: 600;">{{ req.utr_number or 'N/A' }}</td>
+                        <td>{{ req.created_at[:10] }}</td>
+                        <td>
+                            <button class="btn" onclick="resolveReq('{{ req.id }}', 'approved')">Approve</button>
+                            <button class="btn btn-reject" onclick="resolveReq('{{ req.id }}', 'rejected')">Reject</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5">No pending requests.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>User Management</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Credits</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.role }}</td>
+                        <td id="cred-{{ user.id }}">{{ user.credits }}</td>
+                        <td>
+                            <button class="btn" onclick="addCredit('{{ user.id }}')">+5 Credits</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>Blog & SEO Management</h2>
+            <div style="margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px;">
+                <h3 style="font-size: 14px; color: var(--accent);">Create New Research Blog</h3>
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px;">
+                    <input type="text" id="blogTitle" placeholder="Blog Title" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 6px; color: white;">
+                    <textarea id="blogContent" placeholder="Blog Content (Markdown supported)..." rows="4" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 6px; color: white; font-family: 'Inter';"></textarea>
+                    <button class="btn" onclick="createBlog()" style="width: 150px; height: 40px;">Publish Blog</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for blog in blogs %}
+                    <tr id="blog-{{ blog.id }}">
+                        <td>{{ blog.id }}</td>
+                        <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ blog.title }}</td>
+                        <td>{{ blog.created_at[:10] }}</td>
+                        <td>
+                            <button class="btn btn-reject" onclick="deleteBlog('{{ blog.id }}')">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+    <script>
+        tsParticles.load("tsparticles", {
+            fpsLimit: 60,
+            particles: {
+                number: { value: 30, density: { enable: true, area: 800 } },
+                color: { value: ["#66FCF1", "#45A29E"] },
+                shape: { type: "circle" },
+                opacity: { value: 0.2 },
+                size: { value: { min: 1, max: 2 } },
+                move: { enable: true, speed: 0.5, direction: "none", random: true, outModes: "out" },
+                links: { enable: true, color: "#66FCF1", distance: 150, opacity: 0.1, width: 1 }
+            }
+        });
+
+        async function resolveReq(reqId, status) {
+            const res = await fetch('/api/admin/resolve_request', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({request_id: reqId, status: status})
+            });
+            if (res.ok) {
+                document.getElementById('req-' + reqId).remove();
+                location.reload(); // Refresh to update user balances
+            } else {
+                alert("Failed to resolve request.");
+            }
+        }
+        
+        async function addCredit(userId) {
+            const res = await fetch('/api/admin/assign_credits', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({user_id: userId, amount: 5})
+            });
+            if (res.ok) {
+                const el = document.getElementById('cred-' + userId);
+                el.innerText = parseInt(el.innerText) + 5;
+            } else {
+                alert("Failed to add credit.");
+            }
+        }
+
+        async function createBlog() {
+            const title = document.getElementById('blogTitle').value;
+            const content = document.getElementById('blogContent').value;
+            if (!title || !content) return alert("Title and content required.");
+
+            const res = await fetch('/api/admin/create_blog', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({title, content})
+            });
+            if (res.ok) {
+                location.reload();
+            } else {
+                alert("Failed to create blog.");
+            }
+        }
+
+        async function deleteBlog(blogId) {
+            if (!confirm("Are you sure?")) return;
+            const res = await fetch('/api/admin/delete_blog', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({blog_id: blogId})
+            });
+            if (res.ok) {
+                document.getElementById('blog-' + blogId).remove();
+            } else {
+                alert("Failed to delete blog.");
+            }
+        }
+    </script>
+</body>
+</html>
