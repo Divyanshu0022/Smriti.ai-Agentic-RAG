@@ -161,7 +161,7 @@ function appendUserMessage(text) {
   scrollToBottom();
 }
 
-function appendAIMessage(htmlContent, meta = null, actions = true) {
+function appendAIMessage(htmlContent, meta = null, actions = true, isProfileAudit = false) {
   hideWelcome();
   const div = document.createElement('div');
   div.className = 'message ai-msg';
@@ -169,7 +169,7 @@ function appendAIMessage(htmlContent, meta = null, actions = true) {
   let metaHtml = '';
   if (meta) {
     metaHtml = '<div class="msg-meta">';
-    if (meta.mode) metaHtml += `<span class="meta-chip mode"><i class="fa-solid fa-microchip"></i> ${meta.mode}</span>`;
+    // Time label is enough, we don't need misleading model names
     if (meta.time) metaHtml += `<span class="meta-chip time"><i class="fa-solid fa-stopwatch"></i> ${meta.time}ms</span>`;
     if (meta.cached) metaHtml += `<span class="meta-chip cached"><i class="fa-solid fa-bolt"></i> Cached</span>`;
     if (meta.sources && meta.sources.length) {
@@ -209,6 +209,7 @@ function appendAIMessage(htmlContent, meta = null, actions = true) {
       <div class="msg-actions">
         <button class="msg-action-btn" onclick="takeAction('email', decodeURIComponent('${rawContent}'))"><i class="fa-regular fa-envelope"></i> Email Report</button>
         <button class="msg-action-btn" onclick="takeAction('export', decodeURIComponent('${rawContent}'))"><i class="fa-solid fa-file-export"></i> Professional Brief</button>
+        ${isProfileAudit ? `<button class="msg-action-btn" onclick="appendSheetFromAudit()" title="Append this profile to Google Sheet"><i class="fa-solid fa-file-export"></i> Append to Sheet</button>` : ''}
       </div>
     `;
   }
@@ -488,21 +489,24 @@ uploadForm.addEventListener('submit', async (e) => {
 document.querySelectorAll('.audit-btn').forEach(btn => {
   btn.addEventListener('click', async () => {
     const type = btn.getAttribute('data-type');
-    const label = type === 'risk' ? 'Risk Audit' : 'Professional Profile';
+    const label = type === 'risk' ? 'Risk Audit' : (type === 'legal' ? 'Legal Audit' : 'Professional Profile');
     appendUserMessage(`*Triggered ${label}*`);
     appendThinking();
     try {
+      const model = document.getElementById('modelSelector').value;
+      
       const res = await fetch('/api/audit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: type })
+        body: JSON.stringify({ type: type, model: model })
       });
       const data = await res.json();
       removeThinking();
       if (data.error) throw new Error(data.error);
 
-      const meta = { mode: 'Specialized Agent (Pro Model)', time: 'varies' };
-      appendAIMessage(formatResponse(data.audit), meta);
+      const isProf = type === 'professional';
+      const formattedAudit = formatResponse(`**${type.toUpperCase()} AUDIT REPORT**\n\n${data.audit}`);
+      appendAIMessage(formattedAudit, null, true, isProf);
       loadHistory();
     } catch (error) {
       removeThinking();
@@ -682,3 +686,26 @@ async function loadSummaries() {
 checkKbStatus();
 loadHistory();
 loadSummaries();
+
+// ─── Append to sheet from audit ──────────────────────────────
+async function appendSheetFromAudit() {
+    const model = document.getElementById('modelSelector').value;
+    alert("Triggered Append to Sheet Agent. Please wait while it processes the document...");
+    try {
+        const res = await fetch('/api/profile_audit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model: model })
+        });
+        const data = await res.json();
+            
+        if (data.success) {
+            alert("✅ Successfully appended profile to Google Sheet!");
+        } else {
+            alert("❌ Action failed: " + (data.error || data.message));
+        }
+    } catch (e) {
+        alert("❌ Error connecting to server.");
+        console.error(e);
+    }
+}

@@ -84,7 +84,7 @@ def get_embeddings():
 # ─── Model Override (rate-limit safety net) ──────────────────
 # Set to None to enable free model selection from the UI dropdown.
 # Using the highest-tier model for maximum quality agentic outputs.
-MODEL_OVERRIDE = "gemini-2.5-pro"
+MODEL_OVERRIDE = None
 
 def get_llm(model_name="gemini-2.5-pro"):
     """
@@ -201,9 +201,9 @@ def process_file(filepath):
 
 # ─── Summary Generation ──────────────────────────────────────
 
-def generate_summary(full_text, max_text_len=8000):
+def generate_summary(full_text, max_text_len=8000, model_name="gemini-2.5-flash-lite"):
     """Uses the LLM to generate a concise summary of the document."""
-    llm = get_llm()
+    llm = get_llm(model_name)
     
     # Truncate if very long to avoid token limits
     truncated = full_text[:max_text_len]
@@ -219,7 +219,7 @@ def generate_summary(full_text, max_text_len=8000):
 
 # ─── RAG Query ────────────────────────────────────────────────
 
-def query_rag(user_query):
+def query_rag(user_query, model_name="gemini-2.5-flash-lite"):
     """
     Queries FAISS with similarity scores and uses Gemini to format the final answer.
     Returns answer, chunks, similarity scores, sources, and timing info.
@@ -270,7 +270,7 @@ Context:
         ("human", "{input}")
     ])
     
-    llm = get_llm()
+    llm = get_llm(model_name)
     chain = qa_prompt | llm
     response = chain.invoke({"context": context_str, "input": user_query})
     
@@ -300,7 +300,7 @@ Context:
 
 # ─── Query Stream Support ──────────────────────────────────────
 
-def query_rag_stream(user_query):
+def query_rag_stream(user_query, model_name="gemini-2.5-flash-lite"):
     """
     Returns a tuple of (metadata_dict, generator).
     The generator yields chunks of the LLM response text.
@@ -339,7 +339,7 @@ Context:
         ("human", "{input}")
     ])
     
-    llm = get_llm()
+    llm = get_llm(model_name)
     chain = qa_prompt | llm
     
     elapsed_ms = int((time.time() - start_time) * 1000)
@@ -360,14 +360,14 @@ Context:
 
 # ─── Direct LLM Query (No RAG — for comparison mode) ─────────
 
-def query_direct_llm(user_query):
+def query_direct_llm(user_query, model_name="gemini-2.5-flash-lite"):
     """
     Queries the LLM directly WITHOUT any retrieval (no RAG).
     Used for comparison: RAG vs No-RAG.
     """
     start_time = time.time()
     
-    llm = get_llm()
+    llm = get_llm(model_name)
     prompt = ChatPromptTemplate.from_messages([
         ("system", "You are a helpful AI assistant. Answer the user's question to the best of your knowledge. If you are unsure, say so."),
         ("human", "{input}")
@@ -387,9 +387,9 @@ def query_direct_llm(user_query):
         "cached": False
     }
 
-def query_direct_llm_stream(user_query):
+def query_direct_llm_stream(user_query, model_name="gemini-2.5-flash-lite"):
     start_time = time.time()
-    llm = get_llm()
+    llm = get_llm(model_name)
     prompt = ChatPromptTemplate.from_messages([
         ("system", "You are a helpful AI assistant. Answer the user's question to the best of your knowledge. If you are unsure, say so."),
         ("human", "{input}")
@@ -471,7 +471,7 @@ def query_long_context_stream(user_query, model_name="gemini-2.5-flash-lite"):
 
 # ─── Automated Audit Logic (Interview Winner) ────────────────
 
-def perform_document_audit(audit_type="general"):
+def perform_document_audit(audit_type="general", model_name="gemini-2.5-pro"):
     """
     Specialized agentic function to detect 'red flags' or 'deep insights'.
     """
@@ -479,7 +479,7 @@ def perform_document_audit(audit_type="general"):
     if not full_text:
         return "No documents found to audit."
         
-    llm = get_llm()  # Respects MODEL_OVERRIDE; uses Pro when override is None
+    llm = get_llm(model_name)  # Respects MODEL_OVERRIDE; uses Pro when override is None
     
     audit_prompts = {
         "general": ("General Auditor Agent", "Perform a comprehensive audit of these documents. Identify the core purpose, key participants, and any potential inconsistencies."),

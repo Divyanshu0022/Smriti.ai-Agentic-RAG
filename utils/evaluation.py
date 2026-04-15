@@ -78,4 +78,3 @@ def generate_tsne_plot(static_dir="static"):
         import traceback
         traceback.print_exc()
         return None
-

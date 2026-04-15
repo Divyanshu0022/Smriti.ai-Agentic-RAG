@@ -7,7 +7,7 @@ from utils.rag import (
     process_file, query_rag, query_direct_llm, query_long_context, 
     perform_document_audit, generate_summary, VECTOR_STORE_DIR, clear_cache
 )
-from utils.email_sender import send_email
+from agents.email_sender import send_email
 from utils.evaluation import calculate_metrics, generate_tsne_plot
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
@@ -21,7 +21,7 @@ from utils.database import (
     get_all_blogs, insert_blog, delete_blog,
     get_user_by_email, get_user_by_google_id, update_user_otp, verify_user, update_user_password, get_user_by_id
 )
-from utils.profile_audit import audit_profile_and_save, get_profile_summary
+from agents.profile_audit import audit_profile_and_save, get_profile_summary
 from dotenv import load_dotenv
 import random
 from datetime import datetime, timedelta
@@ -267,13 +267,16 @@ def payment():
 @app.route('/api/profile_audit', methods=['POST'])
 @login_required
 def profile_audit():
+    data = request.json or {}
+    model_name = data.get('model', 'gemini-2.5-flash-lite')
+    
     if not deduct_credit(session['user_id'], 5):
         return jsonify({'error': 'Insufficient credits. Profile Audit costs 5 credits.'}), 403
     
-    result = audit_profile_and_save()
-    if result['success']:
+    result = audit_profile_and_save(model_name=model_name)
+    if result.get('success'):
         return jsonify(result)
-    return jsonify({"error": result['message']}), 500
+    return jsonify({"error": result.get('message', 'Unknown error')}), 500
 
 @app.route('/profile_audit')
 @login_required
@@ -325,11 +328,11 @@ def chat():
     
     try:
         if mode == 'direct':
-            response = query_direct_llm(query)
+            response = query_direct_llm(query, model_name=model_name)
         elif mode == 'long_context':
             response = query_long_context(query, model_name=model_name)
         else:
-            response = query_rag(user_query=query)
+            response = query_rag(user_query=query, model_name=model_name)
         
         # Log the query to SQLite
         avg_score = None
@@ -373,11 +376,11 @@ def chat_stream():
         import json
         try:
             if mode == 'direct':
-                metadata, chunk_generator = query_direct_llm_stream(query)
+                metadata, chunk_generator = query_direct_llm_stream(query, model_name=model_name)
             elif mode == 'long_context':
                 metadata, chunk_generator = query_long_context_stream(query, model_name=model_name)
             else:
-                metadata, chunk_generator = query_rag_stream(query)
+                metadata, chunk_generator = query_rag_stream(query, model_name=model_name)
                 
             # Log the query metadata
             avg_score = None
@@ -538,8 +541,8 @@ def compare():
         return jsonify({"error": "No query provided"}), 400
     
     try:
-        rag_response = query_rag(query)
-        direct_response = query_direct_llm(query)
+        rag_response = query_rag(query, model_name="gemini-2.5-flash-lite")
+        direct_response = query_direct_llm(query, model_name="gemini-2.5-flash-lite")
         
         return jsonify({
             "rag": rag_response,
@@ -557,11 +560,12 @@ def audit():
         return jsonify({'error': 'Insufficient credits'}), 403
 
     """Performs specialized document auditing (Risk detection, Professional extraction)."""
-    data = request.json
+    data = request.json or {}
     audit_type = data.get('type', 'general')
+    model_name = data.get('model', 'gemini-2.5-flash-lite')
     
     try:
-        result = perform_document_audit(audit_type)
+        result = perform_document_audit(audit_type, model_name=model_name)
         return jsonify({"audit": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500

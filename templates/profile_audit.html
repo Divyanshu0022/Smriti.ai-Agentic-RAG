@@ -43,6 +43,17 @@
         <div class="audit-card">
             <div class="status-badge">Premium Feature: 5 Credits</div>
             <p style="margin-bottom: 30px; color: var(--text-dim);">Ready to audit your uploaded document? Make sure your resume is the latest upload.</p>
+            
+            <select id="modelSelector" style="background: var(--bg); color: var(--primary); border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 20px; font-family: 'Outfit'; font-size: 16px;">
+                <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite</option>
+                <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                <option value="gemini-3.1-pro" selected>Gemini 3.1 Pro (High)</option>
+                <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+            </select>
+            <br>
+            
             <button class="btn-audit" id="auditBtn" onclick="runAudit()">Run Agentic Audit <i class="fa-solid fa-sparkles"></i></button>
 
             <div class="loading" id="loading">
@@ -74,7 +85,12 @@
             results.style.display = 'none';
 
             try {
-                const res = await fetch('/api/profile_audit', { method: 'POST' });
+                const model = document.getElementById('modelSelector').value;
+                const res = await fetch('/api/profile_audit', { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: model })
+                });
                 const data = await res.json();
 
                 if (data.error) {

@@ -120,31 +120,28 @@ Navigate to `http://localhost:5000/`
 
 ```
 major_project/
-├── app.py                  # Main Flask Server: Handles all routing, API endpoints, and session logic.
-├── setup_gmail_token.py    # Auth Utility: Unified OAuth2 setup for both Gmail (Email) and Sheets APIs.
-├── requirements.txt        # Dependencies: Required Python packages (Flask, Gemini, FAISS, LangChain).
+├── app.py                  # Main Flask Server: Routing, API endpoints, and session logic.
+├── requirements.txt        # Dependencies: Flask, Gemini, FAISS, LangChain.
 ├── .env                    # Configuration: Secure storage for API keys and OAuth tokens.
-├── knowledge_base.db       # Database: SQLite file storing users, query history, and credit logs.
-├── faiss_index/            # Vector Storage: Persisted semantic embeddings for document retrieval.
-├── utils/                  # Core Business Logic
-│   ├── rag.py              # RAG Pipeline: Ingestion, Chunking, and Gemini 2.5 Pro reasoning logic.
-│   ├── database.py         # DB Operations: SQL management for users, credits, and blog content.
-│   ├── email_sender.py     # Gmail Helper: Dispatches premium HTML reports via OAuth2 tokens.
-│   ├── profile_audit.py    # Sheets Agent: HR parsing logic and automated Google Sheets sync.
-│   └── evaluation.py       # Metrics Layer: Calculates MRR/NDCG and generates t-SNE visualizations.
-├── templates/              # UI Layer (Jinja2)
-│   ├── index.html          # Main Interface: State-of-the-art Agentic Chat UI.
-│   ├── login.html          # Auth Entry: Premium glassmorphic sign-in page.
-│   ├── register.html       # Onboarding: Multi-field registration with OTP triggering.
-│   ├── verify_otp.html     # Security: Email verification interface.
-│   ├── set_password.html   # Finalization: Secure password hashing setup.
-│   ├── payment.html        # Fintech: UPI QR generation and UTR submission workflow.
-│   ├── profile_audit.html  # HR UI: Visual monitoring of automated profile processing.
-│   ├── admin.html          # Admin Panel: Human-in-the-loop credit approval and user mgmt.
-│   └── otp_email.html      # Email Template: Branded HTML template for system notifications.
-├── static/                 # Assets (CSS/JS/Fonts): Global designTokens and visuals.
-├── report.md               # Documentation: Comprehensive technical project report.
-└── README.md               # User Guide: Setup instructions and project overview.
+├── knowledge_base.db       # Database: SQLite file storing users, query logs, and credits.
+├── faiss_index/            # Vector Storage: Persisted semantic embeddings.
+├── agents/                 # Specialized Agentic Workers
+│   ├── email_sender.py     # Gmail Agent: Dispatches premium HTML reports via OAuth2.
+│   ├── profile_audit.py    # Sheets Agent: HR parsing and automated Google Sheets sync.
+│   └── __init__.py         # Package manifest.
+├── utils/                  # Core RAG & Logic
+│   ├── rag.py              # RAG Pipeline: Ingestion, Chunking, and Gemini reasoning.
+│   ├── database.py         # DB Operations: User, Credit, and Blog management.
+│   └── evaluation.py       # Metrics Layer: MRR/NDCG and t-SNE visualizations.
+├── scripts/                # Utility & Setup Scripts
+│   ├── setup_gmail_token.py # Unified OAuth2 setup for Gmail and Sheets.
+│   └── debug_sheets.py     # Diagnostics for Google Sheets integration.
+├── docs/                   # Project Documentation
+│   ├── report.md           # Comprehensive technical project report.
+│   ├── skills.md           # Project roadmap and skills breakdown.
+│   └── feature_auth_plan.md# Authentication system architecture.
+├── templates/              # UI Layer (Jinja2 Templates)
+└── static/                 # Frontend Assets (CSS/JS/Images)
 ```
 
 ---
